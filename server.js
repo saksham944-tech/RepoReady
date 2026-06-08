@@ -10,8 +10,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const apiKey = process.env.GEMINI_API_KEY;
+
+if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is missing. Add it in Render Environment Variables.");
+}
+
 const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY
+    apiKey: apiKey
 });
 
 const __filename = fileURLToPath(import.meta.url);
