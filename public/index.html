@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RepoReady - Advanced README Generator</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <div class="app">
+
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="logo">RepoReady</div>
+
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#generator">Generator</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <section class="hero" id="home">
+            <div>
+                <p class="badge">AI-ready README Generator</p>
+
+                <h1>Generate Professional README Files Instantly</h1>
+
+                <p class="subtitle">
+                    RepoReady helps developers create clean, structured and GitHub-ready README.md files
+                    through smart suggestions, customizable sections and one-click download.
+                </p>
+
+                <p class="creator-text">Built by Saksham Gupta</p>
+
+                <a href="#generator" class="hero-btn">Start Generating</a>
+            </div>
+        </section>
+
+        <!-- GENERATOR SECTION -->
+        <section id="generator" class="generator-section">
+
+            <div class="section-heading">
+                <h2>README Generator</h2>
+                <p>Fill your project details, choose sections, preview the output and download your README.md file.</p>
+            </div>
+
+            <!-- CHATBOT ASSISTANT -->
+            <section class="chatbot-section">
+
+                <div class="chatbot-header">
+                    <div>
+                        <h2>RepoReady Chat Assistant</h2>
+                        <p>Answer a few questions and I will auto-fill your README details.</p>
+                    </div>
+
+                    <button onclick="resetChatbot()" class="reset-chat-btn">Reset Chat</button>
+                </div>
+
+                <div class="chatbot-box" id="chatbotBox">
+                    <div class="bot-message">
+                        Hey! I am RepoReady Assistant. Let’s create your README step by step.
+                    </div>
+                </div>
+
+                <div class="chat-input-row">
+                    <input type="text" id="chatInput" placeholder="Type your answer here...">
+                    <button onclick="handleChatInput()">Send</button>
+                </div>
+
+            </section>
+
+            <main class="main-layout">
+
+                <!-- LEFT PANEL -->
+                <section class="input-panel">
+
+                    <h2>Project Information</h2>
+
+                    <div class="form-group">
+                        <label>README Template</label>
+                        <select id="readmeTemplate">
+                            <option value="professional">Professional README</option>
+                            <option value="basic">Basic README</option>
+                            <option value="college">College Project README</option>
+                            <option value="opensource">Open Source README</option>
+                            <option value="aiml">AI/ML Project README</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Project Type</label>
+                        <select id="projectType" onchange="suggestSections()">
+                            <option value="">Select project type</option>
+                            <option value="web">Web App</option>
+                            <option value="python">Python Project</option>
+                            <option value="ai">AI/ML Project</option>
+                            <option value="mobile">Mobile App</option>
+                            <option value="api">Backend/API Project</option>
+                            <option value="college">College Mini Project</option>
+                        </select>
+                    </div>
+
+                    <div class="assistant-box">
+                        <h3>RepoReady Assistant</h3>
+                        <p id="assistantSuggestion">
+                            Select a project type and I will suggest the best README sections.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Project Name</label>
+                        <input type="text" id="projectName" placeholder="Example: Student Mental Health Chatbot">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Short Description</label>
+                        <textarea id="projectDescription" placeholder="Explain your project in 2-3 lines"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Features</label>
+                        <textarea id="features" placeholder="Write one feature per line"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tech Stack</label>
+                        <textarea id="techStack" placeholder="Example: HTML&#10;CSS&#10;JavaScript"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Installation Steps</label>
+                        <textarea id="installation" placeholder="Example: npm install"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Usage Instructions</label>
+                        <textarea id="usage" placeholder="Example: npm start"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Project Structure</label>
+                        <textarea id="projectStructure" placeholder="Example: src/&#10;components/&#10;index.html"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Future Scope</label>
+                        <textarea id="futureScope" placeholder="Write one future improvement per line"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Author Name</label>
+                        <input type="text" id="author" placeholder="Example: Saksham Gupta">
+                    </div>
+
+                    <div class="form-group">
+                        <label>GitHub Profile Link</label>
+                        <input type="text" id="githubLink" placeholder="Example: https://github.com/username">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Repository Link</label>
+                        <input type="text" id="repoLink" placeholder="Example: https://github.com/username/project-name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Live Demo Link</label>
+                        <input type="text" id="demoLink" placeholder="Example: https://your-project.vercel.app">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Screenshot Image Link</label>
+                        <input type="text" id="screenshotLink" placeholder="Example: ./screenshots/home.png or image URL">
+                    </div>
+
+                    <div class="form-group">
+                        <label>License</label>
+                        <select id="license">
+                            <option value="MIT">MIT</option>
+                            <option value="Apache 2.0">Apache 2.0</option>
+                            <option value="GPL v3">GPL v3</option>
+                            <option value="No License">No License</option>
+                        </select>
+                    </div>
+
+                    <h2 class="section-title">Choose README Sections</h2>
+
+                    <div class="checkbox-grid">
+                        <label><input type="checkbox" id="includeToc" checked> Table of Contents</label>
+                        <label><input type="checkbox" id="includeBadges" checked> Tech Badges</label>
+                        <label><input type="checkbox" id="includeLinks" checked> Project Links</label>
+                        <label><input type="checkbox" id="includeScreenshots" checked> Screenshots</label>
+                        <label><input type="checkbox" id="includeFeatures" checked> Features</label>
+                        <label><input type="checkbox" id="includeTech" checked> Tech Stack</label>
+                        <label><input type="checkbox" id="includeInstallation" checked> Installation</label>
+                        <label><input type="checkbox" id="includeUsage" checked> Usage</label>
+                        <label><input type="checkbox" id="includeStructure" checked> Project Structure</label>
+                        <label><input type="checkbox" id="includeFuture" checked> Future Scope</label>
+                        <label><input type="checkbox" id="includeAuthor" checked> Author</label>
+                        <label><input type="checkbox" id="includeLicense" checked> License</label>
+                    </div>
+
+                    <div class="button-row five-buttons">
+                        <button onclick="generateReadme()">Generate Basic</button>
+                        <button onclick="generateAIReadme()" class="ai-btn">Generate with AI</button>
+                        <button onclick="copyReadme()" class="secondary-btn">Copy</button>
+                        <button onclick="downloadReadme()" class="download-btn">Download</button>
+                        <button onclick="clearSavedDraft()" class="danger-btn">Clear Draft</button>
+                    </div>
+
+                </section>
+
+                <!-- RIGHT PANEL -->
+                <section class="preview-panel">
+
+                    <div class="preview-header">
+                        <h2>README Preview</h2>
+                        <p>Raw Markdown + Live Preview</p>
+                    </div>
+
+                    <div class="preview-tabs">
+                        <button onclick="showRawPreview()" id="rawTab" class="tab-btn active-tab">Markdown</button>
+                        <button onclick="showRenderedPreview()" id="renderedTab" class="tab-btn">Preview</button>
+                    </div>
+
+                    <textarea id="readmePreview" readonly></textarea>
+
+                    <div id="renderedPreview" class="rendered-preview hidden"></div>
+
+                </section>
+
+            </main>
+
+        </section>
+
+        <!-- FEATURES SECTION -->
+        <section id="features" class="features-section">
+
+            <div class="section-heading">
+                <h2>Why Use RepoReady?</h2>
+                <p>A smarter way to create clean and professional project documentation.</p>
+            </div>
+
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <h3>Smart Suggestions</h3>
+                    <p>
+                        Select your project type and RepoReady recommends the best README sections for your project.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Custom Sections</h3>
+                    <p>
+                        Choose exactly what you want to include, such as features, tech stack, usage, license and future scope.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Live Preview</h3>
+                    <p>
+                        Instantly preview your generated Markdown before copying or downloading the final README.md file.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>One-Click Download</h3>
+                    <p>
+                        Download your generated README.md file directly to your system with a single click.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="about-section">
+
+            <div class="section-heading">
+                <h2>About RepoReady</h2>
+            </div>
+
+            <div class="about-box">
+                <p>
+                    RepoReady is a README auto-generator built to help developers, students and project teams
+                    create professional GitHub documentation quickly. Instead of writing a README manually from scratch,
+                    users can enter their project details, select useful sections and instantly generate a clean
+                    Markdown file.
+                </p>
+
+                <p>
+                    This project is designed and developed by Saksham Gupta as a practical tool for making project
+                    documentation faster, cleaner and more beginner-friendly.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- CONTACT / FOOTER -->
+        <footer id="contact" class="footer">
+
+            <h2>RepoReady</h2>
+
+            <p>
+                Built with passion by <strong>Saksham Gupta</strong>
+            </p>
+
+            <div class="footer-links">
+                <a href="https://github.com/saksham944-tech" target="_blank" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+
+                <a href="https://www.linkedin.com/in/saksham-gupta-95b50036b/" target="_blank" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+
+                <a href="mailto:saksham26sept@gmail.com" aria-label="Email">
+                    <i class="fa-solid fa-envelope"></i>
+                </a>
+            </div>
+
+            <p class="copyright">
+                © 2026 RepoReady. All rights reserved.
+            </p>
+
+        </footer>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
