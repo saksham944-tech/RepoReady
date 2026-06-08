@@ -11,6 +11,8 @@ const PORT = process.env.PORT || 3000;
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
+console.log("OpenRouter key loaded:", OPENROUTER_API_KEY ? "YES" : "NO");
+
 if (!OPENROUTER_API_KEY) {
     console.error("OPENROUTER_API_KEY is missing. Add it in Render Environment Variables.");
 }
