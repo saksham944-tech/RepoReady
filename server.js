@@ -9,10 +9,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
-if (!GEMINI_API_KEY) {
-    console.error("GEMINI_API_KEY is missing. Add it in Render Environment Variables.");
+if (!OPENROUTER_API_KEY) {
+    console.error("OPENROUTER_API_KEY is missing. Add it in Render Environment Variables.");
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,10 +24,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.post("/api/generate-readme", async (req, res) => {
     try {
-        if (!GEMINI_API_KEY) {
+        if (!OPENROUTER_API_KEY) {
             return res.status(500).json({
                 success: false,
-                message: "GEMINI_API_KEY is missing on the server."
+                message: "OPENROUTER_API_KEY is missing on the server."
             });
         }
 
@@ -69,44 +69,48 @@ Rules:
 - If any field is empty, skip that section or write it naturally.
 `;
 
-        const geminiResponse = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    contents: [
-                        {
-                            parts: [
-                                {
-                                    text: prompt
-                                }
-                            ]
-                        }
-                    ]
-                })
-            }
-        );
+        const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://repoready-79tx.onrender.com",
+                "X-Title": "RepoReady"
+            },
+            body: JSON.stringify({
+                model: "deepseek/deepseek-chat-v3-0324:free",
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are an expert README.md documentation generator. Return only Markdown."
+                    },
+                    {
+                        role: "user",
+                        content: prompt
+                    }
+                ],
+                temperature: 0.4,
+                max_tokens: 3000
+            })
+        });
 
-        const data = await geminiResponse.json();
+        const data = await openRouterResponse.json();
 
-        if (!geminiResponse.ok) {
-            console.error("Gemini API Error:", data);
+        if (!openRouterResponse.ok) {
+            console.error("OpenRouter API Error:", data);
 
             return res.status(500).json({
                 success: false,
-                message: data.error?.message || "Gemini API request failed."
+                message: data.error?.message || "OpenRouter API request failed."
             });
         }
 
-        const readme = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const readme = data.choices?.[0]?.message?.content;
 
         if (!readme) {
             return res.status(500).json({
                 success: false,
-                message: "Gemini did not return README content."
+                message: "OpenRouter did not return README content."
             });
         }
 
