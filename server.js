@@ -3,22 +3,17 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const apiKey = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-if (!apiKey) {
-    throw new Error("GEMINI_API_KEY is missing. Add it in Render Environment Variables.");
+if (!GEMINI_API_KEY) {
+    console.error("GEMINI_API_KEY is missing. Add it in Render Environment Variables.");
 }
-
-const ai = new GoogleGenAI({
-    apiKey: apiKey
-});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,6 +24,13 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.post("/api/generate-readme", async (req, res) => {
     try {
+        if (!GEMINI_API_KEY) {
+            return res.status(500).json({
+                success: false,
+                message: "GEMINI_API_KEY is missing on the server."
+            });
+        }
+
         const projectData = req.body;
 
         const prompt = `
@@ -67,12 +69,46 @@ Rules:
 - If any field is empty, skip that section or write it naturally.
 `;
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt
-        });
+        const geminiResponse = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: prompt
+                                }
+                            ]
+                        }
+                    ]
+                })
+            }
+        );
 
-        const readme = response.text;
+        const data = await geminiResponse.json();
+
+        if (!geminiResponse.ok) {
+            console.error("Gemini API Error:", data);
+
+            return res.status(500).json({
+                success: false,
+                message: data.error?.message || "Gemini API request failed."
+            });
+        }
+
+        const readme = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!readme) {
+            return res.status(500).json({
+                success: false,
+                message: "Gemini did not return README content."
+            });
+        }
 
         res.json({
             success: true,
@@ -84,7 +120,7 @@ Rules:
 
         res.status(500).json({
             success: false,
-            message: "Failed to generate README using AI."
+            message: error.message || "Failed to generate README using AI."
         });
     }
 });
